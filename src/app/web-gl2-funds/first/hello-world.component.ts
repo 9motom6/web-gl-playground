@@ -76,7 +76,25 @@ void main() {
         const offset = 0;        // start at the beginning of the buffer
         gl.vertexAttribPointer(
             positionAttributeLocation, size, type, normalize, stride, offset);
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
+        this.clearCanvas(gl);
+
+        // Tell it to use our program (pair of shaders)
+        gl.useProgram(program);
+
+        // Bind the attribute/buffer set we want.
+        gl.bindVertexArray(vao);
+
+        const primitiveType: number = gl.TRIANGLES;
+        const count: number = 3;
+        gl.drawArrays(primitiveType, offset, count);
+
+    }
+
+    private clearCanvas(gl: WebGL2RenderingContext): void {
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
     }
 
     private createShader(gl: WebGL2RenderingContext, type: GLenum, source: string): WebGLShader {
