@@ -1,4 +1,4 @@
-import {Component, OnInit} from "@angular/core";
+import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
 import {fragmentShaderSource, vertexShaderSource} from "./shaders";
 
 @Component({
@@ -6,16 +6,15 @@ import {fragmentShaderSource, vertexShaderSource} from "./shaders";
     templateUrl: "./hello-world.component.html",
     styleUrls: ["./hello-world.component.less"]
 })
-export class HelloWorldComponent implements OnInit {
-
+export class HelloWorldComponent implements AfterViewInit {
+    @ViewChild("canvas", {static: true})
+    canvas: ElementRef<HTMLCanvasElement>;
 
     constructor() {
     }
 
-    ngOnInit(): void {
-        const canvas: HTMLCanvasElement = document.querySelector("#c");
-
-        const gl: WebGL2RenderingContext = canvas.getContext("webgl2");
+    ngAfterViewInit(): void {
+        const gl: WebGL2RenderingContext = this.canvas.nativeElement.getContext("webgl2");
         if (!gl) {
             alert("Your browser does not support WebGL2.");
             console.error("Your browser does not support WebGL2.");
