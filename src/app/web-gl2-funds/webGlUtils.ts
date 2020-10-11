@@ -33,19 +33,19 @@ export function loadShader(gl: WebGLRenderingContext, shaderSource: string, shad
  * program and calls useProgram.
  * @param gl Rendering context
  * @param shaders The shaders to attach
- * @param optAttribs An array of attribs names. Locations will be assigned by index if not passed in
- * @param optLocations The locations for the. A parallel array to optAttribs letting you assign locations.
+ * @param attribs An array of attribs names. Locations will be assigned by index if not passed in
+ * @param locations The locations for the. A parallel array to attribs letting you assign locations.
  */
-function createProgram(gl: WebGL2RenderingContext, shaders: WebGLShader[], optAttribs: string[], optLocations: number[]): WebGLProgram {
+export function createProgram(gl: WebGL2RenderingContext, shaders: WebGLShader[], attribs?: string[], locations?: number[]): WebGLProgram {
     const program: WebGLProgram = gl.createProgram();
     shaders.forEach(shader => {
         gl.attachShader(program, shader);
     });
-    if (optAttribs) {
-        optAttribs.forEach((attrib, ndx) => {
+    if (attribs) {
+        attribs.forEach((attrib, ndx) => {
             gl.bindAttribLocation(
                 program,
-                optLocations ? optLocations[ndx] : ndx,
+                locations ? locations[ndx] : ndx,
                 attrib);
         });
     }
@@ -160,7 +160,7 @@ const defaultShaderType = [
  *    Pass in window.devicePixelRatio for native pixels.
  * @return true if the canvas was resized.
  */
-function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement, multiplier: number): boolean {
+export function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement, multiplier: number): boolean {
     multiplier = multiplier || 1;
     // tslint:disable-next-line:no-bitwise
     const width = canvas.clientWidth * multiplier | 0;
@@ -172,4 +172,9 @@ function resizeCanvasToDisplaySize(canvas: HTMLCanvasElement, multiplier: number
         return true;
     }
     return false;
+}
+
+export function clearCanvas(gl: WebGL2RenderingContext): void {
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
 }

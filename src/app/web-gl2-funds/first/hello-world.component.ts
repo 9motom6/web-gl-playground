@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from "@angular/core";
 import {fragmentShaderSource, vertexShaderSource} from "./shaders";
+import {clearCanvas, loadShader, createProgram, resizeCanvasToDisplaySize} from "../webGlUtils";
 
 @Component({
     selector: "app-hello-world",
@@ -21,9 +22,9 @@ export class HelloWorldComponent implements AfterViewInit {
         }
         this.canvas.nativeElement.width = 800;
         this.canvas.nativeElement.height = 600;
-        const vertexShader: WebGLShader = this.createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
-        const fragmentShader: WebGLShader = this.createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
-        const program: WebGLProgram = this.createProgram(gl, vertexShader, fragmentShader);
+        const vertexShader: WebGLShader = loadShader(gl, vertexShaderSource, gl.VERTEX_SHADER);
+        const fragmentShader: WebGLShader = loadShader(gl, fragmentShaderSource, gl.FRAGMENT_SHADER);
+        const program: WebGLProgram = createProgram(gl, [vertexShader, fragmentShader]);
         const positionAttributeLocation: number = gl.getAttribLocation(program, "a_position");
         const positionBuffer: WebGLBuffer = gl.createBuffer();
         const resolutionUniformLocation: WebGLUniformLocation = gl.getUniformLocation(program, "u_resolution");
@@ -51,9 +52,11 @@ export class HelloWorldComponent implements AfterViewInit {
         const offset = 0;        // start at the beginning of the buffer
         gl.vertexAttribPointer(
             positionAttributeLocation, size, type, normalize, stride, offset);
+        resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement, 1);
+
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-        this.clearCanvas(gl);
+        clearCanvas(gl);
 
         // Tell it to use our program (pair of shaders)
         gl.useProgram(program);
@@ -68,38 +71,5 @@ export class HelloWorldComponent implements AfterViewInit {
         const primitiveType: number = gl.TRIANGLES;
         const count: number = 6;
         gl.drawArrays(primitiveType, offset, count);
-
-    }
-
-    private clearCanvas(gl: WebGL2RenderingContext): void {
-        gl.clearColor(0, 0, 0, 0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
-    }
-
-    private createShader(gl: WebGL2RenderingContext, type: GLenum, source: string): WebGLShader {
-        const shader = gl.createShader(type);
-        gl.shaderSource(shader, source);
-        gl.compileShader(shader);
-        const success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-        if (success) {
-            return shader;
-        }
-
-        console.log(gl.getShaderInfoLog(shader));
-        gl.deleteShader(shader);
-    }
-
-    private createProgram(gl: WebGL2RenderingContext, vertexShader, fragmentShader): WebGLProgram {
-        const program: WebGLProgram = gl.createProgram();
-        gl.attachShader(program, vertexShader);
-        gl.attachShader(program, fragmentShader);
-        gl.linkProgram(program);
-        const success = gl.getProgramParameter(program, gl.LINK_STATUS);
-        if (success) {
-            return program;
-        }
-
-        console.log(gl.getProgramInfoLog(program));
-        gl.deleteProgram(program);
     }
 }
