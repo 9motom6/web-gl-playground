@@ -14,24 +14,29 @@ export class HelloWorldComponent implements AfterViewInit {
     }
 
     ngAfterViewInit(): void {
-        const gl: WebGL2RenderingContext = this.canvas.nativeElement.getContext("webgl2");
+        const gl: WebGL2RenderingContext = this.canvas.nativeElement.getContext("webgl2", {antialias: false});
         if (!gl) {
             alert("Your browser does not support WebGL2.");
             console.error("Your browser does not support WebGL2.");
         }
-
+        this.canvas.nativeElement.width = 800;
+        this.canvas.nativeElement.height = 600;
         const vertexShader: WebGLShader = this.createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
         const fragmentShader: WebGLShader = this.createShader(gl, gl.FRAGMENT_SHADER, fragmentShaderSource);
         const program: WebGLProgram = this.createProgram(gl, vertexShader, fragmentShader);
         const positionAttributeLocation: number = gl.getAttribLocation(program, "a_position");
         const positionBuffer: WebGLBuffer = gl.createBuffer();
+        const resolutionUniformLocation: WebGLUniformLocation = gl.getUniformLocation(program, "u_resolution");
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
         // three 2d points
         const positions: number[] = [
-            0, 0,
-            0, 0.5,
-            0.7, 0,
+            10, 20,
+            80, 20,
+            10, 30,
+            10, 30,
+            80, 20,
+            80, 30,
         ];
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
@@ -53,11 +58,15 @@ export class HelloWorldComponent implements AfterViewInit {
         // Tell it to use our program (pair of shaders)
         gl.useProgram(program);
 
+        // Pass in the canvas resolution so we can convert from
+        // pixels to clip space in the shader
+
+        gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height);
         // Bind the attribute/buffer set we want.
         gl.bindVertexArray(vao);
 
         const primitiveType: number = gl.TRIANGLES;
-        const count: number = 3;
+        const count: number = 6;
         gl.drawArrays(primitiveType, offset, count);
 
     }
