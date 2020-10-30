@@ -1,3 +1,41 @@
-<h1>WebGL2 playground</h1>
-<app-hello-world></app-hello-world>
-<app-image></app-image>
+<div class="main-content">
+    <h1>WebGL2 playground</h1>
+    <mat-accordion class="example-headers-align">
+        <mat-expansion-panel [expanded]="step === 0" (opened)="setStep(0)" hideToggle>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Hello world
+                </mat-panel-title>
+                <mat-panel-description>
+                    First basic example, draws some random rectangles
+                    <mat-icon>child_care</mat-icon>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+
+
+            <app-hello-world></app-hello-world>
+            <mat-action-row>
+                <button mat-button color="primary" (click)="nextStep()">Next</button>
+            </mat-action-row>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    Image
+                </mat-panel-title>
+                <mat-panel-description>
+                    Draws a Veigar
+                    <mat-icon>image</mat-icon>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <app-image></app-image>
+            <mat-action-row>
+                <button mat-button color="warn" (click)="prevStep()">Previous</button>
+                <button mat-button color="primary" (click)="nextStep()">Next</button>
+            </mat-action-row>
+        </mat-expansion-panel>
+
+    </mat-accordion>
+
+</div>
