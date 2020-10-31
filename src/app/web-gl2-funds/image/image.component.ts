@@ -90,36 +90,7 @@ export class ImageComponent implements OnInit {
         gl.vertexAttribPointer(
             texCoordAttributeLocation, 2, gl.FLOAT, false, 0, 0);
 
-        // Create a texture.
-        const texture: WebGLTexture = gl.createTexture();
-
-        // make unit 0 the active texture uint
-        // (ie, the unit all other texture commands will affect
-        gl.activeTexture(gl.TEXTURE0 + 0);
-
-        // Bind it to texture unit 0' 2D bind point
-        gl.bindTexture(gl.TEXTURE_2D, texture);
-
-        // Set the parameters so we don't need mips and so we're not filtering
-        // and we don't repeat at the edges
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-
-        // Upload the image into the texture.
-        const mipLevel: number = 0;               // the largest mip
-        const internalFormat: number = gl.RGBA;   // format we want in the texture
-        const srcFormat: number = gl.RGBA;        // format of data we are supplying
-        const srcType: number = gl.UNSIGNED_BYTE; // type of data we are supplying
-        gl.texImage2D(gl.TEXTURE_2D,
-            mipLevel,
-            internalFormat,
-            srcFormat,
-            srcType,
-            image);
-
-        resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement);
+        this.createTexture(gl, image);
 
         // Tell WebGL how to convert from clip space to pixels
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -154,6 +125,36 @@ export class ImageComponent implements OnInit {
         const offset: number = 0;
         const count: number = 6;
         gl.drawArrays(primitiveType, offset, count);
+    }
+
+    private createTexture(gl: WebGL2RenderingContext, image): void {
+        const texture: WebGLTexture = gl.createTexture();
+
+        // make unit 0 the active texture uint
+        // (ie, the unit all other texture commands will affect
+        gl.activeTexture(gl.TEXTURE0 + 0);
+
+        // Bind it to texture unit 0' 2D bind point
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+
+        // Set the parameters so we don't need mips and so we're not filtering
+        // and we don't repeat at the edges
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+        // Upload the image into the texture.
+        const mipLevel: number = 0;               // the largest mip
+        const internalFormat: number = gl.RGBA;   // format we want in the texture
+        const srcFormat: number = gl.RGBA;        // format of data we are supplying
+        const srcType: number = gl.UNSIGNED_BYTE; // type of data we are supplying
+        gl.texImage2D(gl.TEXTURE_2D,
+            mipLevel,
+            internalFormat,
+            srcFormat,
+            srcType,
+            image);
     }
 
     private setRectangle(gl, x, y, width, height): void {
