@@ -36,6 +36,22 @@
             </mat-action-row>
         </mat-expansion-panel>
 
+        <mat-expansion-panel [expanded]="step === 2" (opened)="setStep(2)" hideToggle>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    2D translation
+                </mat-panel-title>
+                <mat-panel-description>
+                    Moving triangles
+                    <mat-icon>arrow_right_alt</mat-icon>
+                </mat-panel-description>
+            </mat-expansion-panel-header>
+            <app-translation></app-translation>
+            <mat-action-row>
+                <button mat-button color="warn" (click)="prevStep()">Previous</button>
+            </mat-action-row>
+        </mat-expansion-panel>
+
     </mat-accordion>
 
 </div>
