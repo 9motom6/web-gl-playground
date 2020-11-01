@@ -1,0 +1,9 @@
+<div class="main">
+    <div class="canvasY">
+        <canvas #canvas class="canvas" width="253" height="300"></canvas>
+        <mat-slider (valueChange)="updatePosition(1, $event)" [vertical]="true" [invert]="true"></mat-slider>
+    </div>
+    <mat-slider (valueChange)="updatePosition(0, $event)"></mat-slider>
+</div>
+
+
